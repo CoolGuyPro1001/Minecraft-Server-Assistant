@@ -84,7 +84,7 @@ namespace Minecraft_Server_Launcher
             return -1;
         }
 
-        public string CreateServer(string name)
+        //public string CreateServer(string name)
         {
             string newServerDirectory = jsonData.RootDirectory + @"\" + name;
             if (Directory.Exists(newServerDirectory))
