@@ -1,6 +1,4 @@
 {
-  "RootDirectory": "C:\\Users\\bealu\\Desktop\\MSL Test\\Servers",
-  "MinecraftServers": [
-
-  ]
+  "RootDirectory": null,
+  "MinecraftServers": [ ]
 }
