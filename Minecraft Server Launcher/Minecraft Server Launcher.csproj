@@ -62,6 +62,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DropServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DropServer.Designer.cs">
+      <DependentUpon>DropServer.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\MinecraftServerLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +84,9 @@
     <Compile Include="GUI\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DropServer.resx">
+      <DependentUpon>DropServer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MinecraftServerLauncher.resx">
       <DependentUpon>MinecraftServerLauncher.cs</DependentUpon>
     </EmbeddedResource>

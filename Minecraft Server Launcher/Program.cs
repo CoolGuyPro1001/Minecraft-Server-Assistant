@@ -18,7 +18,6 @@ namespace Minecraft_Server_Launcher
 
         static private void MyApplicationContext()
         {
-
             // Handle the ApplicationExit event to know when the application is exiting.
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
             launcher = new MinecraftServerLauncher();

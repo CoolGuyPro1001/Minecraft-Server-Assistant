@@ -100,17 +100,20 @@
             // 
             // Message
             // 
+            this.Message.AllowDrop = true;
             this.Message.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
             this.Message.ForeColor = System.Drawing.Color.White;
-            this.Message.Location = new System.Drawing.Point(557, 57);
+            this.Message.Location = new System.Drawing.Point(557, 20);
             this.Message.Margin = new System.Windows.Forms.Padding(0);
             this.Message.Name = "Message";
-            this.Message.Size = new System.Drawing.Size(400, 150);
+            this.Message.Size = new System.Drawing.Size(400, 218);
             this.Message.TabIndex = 6;
             this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Message.DragDrop += new System.Windows.Forms.DragEventHandler(this.Message_DragDrop);
             // 
             // MinecraftServerLauncher
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 526);

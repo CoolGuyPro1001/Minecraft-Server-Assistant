@@ -22,9 +22,9 @@ namespace Minecraft_Server_Launcher.GUI
 
         public MinecraftServerLauncher()
         {
+            manager = new ServerManager(this);
             InitializeComponent();
             directory = Directory.GetCurrentDirectory();
-            manager = new ServerManager(this);
             servers = new List<Tuple<Label, Button, Button, Button, Button>>();
             ServerPanelStartUp();
         }
@@ -234,6 +234,11 @@ namespace Minecraft_Server_Launcher.GUI
         public void WriteMessage(string message)
         {
             Message.Text = message;
+        }
+
+        private void Message_DragDrop(object sender, DragEventArgs e)
+        {
+ 
         }
     }
 }

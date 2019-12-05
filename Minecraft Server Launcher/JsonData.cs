@@ -5,6 +5,7 @@ namespace Minecraft_Server_Launcher
 {
     public class JsonData
     {
+        public bool ContainsServerFile { get; set; }
         public string RootDirectory { get; set; }
         public List<MinecraftServer> MinecraftServers { get; set; }
     }
