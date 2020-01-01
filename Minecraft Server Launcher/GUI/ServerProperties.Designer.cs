@@ -1,9 +1,6 @@
-﻿using System.Drawing;
-using System.IO;
-
-namespace Minecraft_Server_Launcher
+﻿namespace Minecraft_Server_Launcher
 {
-    partial class Options
+    partial class ServerProperties
     {
         /// <summary> 
         /// Required designer variable.
@@ -151,10 +148,11 @@ namespace Minecraft_Server_Launcher
             this.AllowNetherButton.UseVisualStyleBackColor = false;
             this.AllowNetherButton.MouseHover += new System.EventHandler(this.AllowNetherButton_MouseHover);
             // 
-            // Options
+            // ServerProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundImage = global::Minecraft_Server_Launcher.Properties.Resources.backround;
             this.Controls.Add(this.PVPButton);
             this.Controls.Add(this.button10);
@@ -167,7 +165,7 @@ namespace Minecraft_Server_Launcher
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.AllowNetherButton);
-            this.Name = "Options";
+            this.Name = "ServerProperties";
             this.Size = new System.Drawing.Size(980, 504);
             this.ResumeLayout(false);
 

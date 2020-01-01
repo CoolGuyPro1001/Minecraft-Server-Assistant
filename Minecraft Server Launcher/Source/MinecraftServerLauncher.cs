@@ -45,7 +45,7 @@ namespace Minecraft_Server_Launcher.GUI
             }
         }
 
-         private Bitmap CropImage(Bitmap source, Rectangle section)
+        private Bitmap CropImage(Bitmap source, Rectangle section)
         {
             var bitmap = new Bitmap(section.Width, section.Height);
             using (var g = Graphics.FromImage(bitmap))
@@ -58,7 +58,7 @@ namespace Minecraft_Server_Launcher.GUI
         private void AddServerInPanel(int index, string name, int yPos)
         {
             servers.Add(Tuple.Create(new Label(), new Button(), new Button(), new Button(), new Button()));
-            string file = directory + @"\Resources\Options.png";
+            string file = directory + @"\Resources\Icons.png";
             Bitmap image = new Bitmap(file);
 
             Label newServerLabel = servers[index].Item1;
@@ -97,33 +97,40 @@ namespace Minecraft_Server_Launcher.GUI
             ServerPanel.Controls.Add(newLinkButton);
             newLinkButton.Click += LinkButton_Click;
 
-            Button newOptionsButton = servers[index].Item5;
-            newOptionsButton.Location = new Point(OPTIONS_BUTTON_X_POSITION, yPos);
-            newOptionsButton.Size = new Size(COMPONENT_WIDTH, COMPONENT_WIDTH);
-            newOptionsButton.Text = "Options";
-            ServerPanel.Controls.Add(newOptionsButton);
-            newOptionsButton.Click += OptionsButton_Click;
+            Button newServerPropertiesButton = servers[index].Item5;
+            newServerPropertiesButton.Location = new Point(OPTIONS_BUTTON_X_POSITION, yPos);
+            newServerPropertiesButton.Size = new Size(COMPONENT_WIDTH, COMPONENT_WIDTH);
+            newServerPropertiesButton.Text = "Properties";
+            ServerPanel.Controls.Add(newServerPropertiesButton);
+            newServerPropertiesButton.Click += ServerPropertiesButton_Click;
         }
 
         private void RunButton_Click(object sender, EventArgs e)
         {
-            Button b = (Button) sender;
+            Button b = (Button)sender;
             foreach (Tuple<Label, Button, Button, Button, Button> server in servers)
             {
                 if (server.Item2.Equals(b))
                 {
-                    manager.RunServer(server.Item1.Text);
+                    MemorySize min = new MemorySize(500, "M");
+                    MemorySize max = new MemorySize(2, "G");
+
+                    string signed = manager.RunServer(server.Item1.Text, min, max, false);
+                    if (signed == "Not Signed")
+                    {
+                        WriteMessage("Agree?");
+                    }
                 }
             }
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            Button b = (Button) sender;
-            for(int i = 0; i < servers.Count; i++)
+            Button b = (Button)sender;
+            for (int i = 0; i < servers.Count; i++)
             {
                 Tuple<Label, Button, Button, Button, Button> server = servers[i];
-                if(server.Item3.Equals(b))
+                if (server.Item3.Equals(b))
                 {
                     manager.DeleteServer(server.Item1.Text);
                     server.Item1.Dispose();
@@ -141,9 +148,9 @@ namespace Minecraft_Server_Launcher.GUI
         private void Sort(int skipIndex)
         {
             List<Tuple<Label, Button, Button, Button, Button>> newServers = new List<Tuple<Label, Button, Button, Button, Button>>();
-            for(int i = 0; i < servers.Count; i++)
+            for (int i = 0; i < servers.Count; i++)
             {
-                if(i != skipIndex)
+                if (i != skipIndex)
                 {
                     newServers.Add(servers[i]);
                     Tuple<Label, Button, Button, Button, Button> addedServer = newServers[newServers.Count - 1];
@@ -159,8 +166,8 @@ namespace Minecraft_Server_Launcher.GUI
 
         private void LinkButton_Click(object sender, EventArgs e)
         {
-            Button b = (Button) sender;
-            foreach(Tuple<Label, Button, Button, Button, Button> server in servers)
+            Button b = (Button)sender;
+            foreach (Tuple<Label, Button, Button, Button, Button> server in servers)
             {
                 if (server.Item4.Equals(sender))
                 {
@@ -169,18 +176,18 @@ namespace Minecraft_Server_Launcher.GUI
             }
         }
 
-        private void OptionsButton_Click(object sender, EventArgs e)
+        private void ServerPropertiesButton_Click(object sender, EventArgs e)
         {
             Button b = (Button)sender;
-            foreach(Tuple<Label, Button, Button, Button, Button> server in servers)
+            foreach (Tuple<Label, Button, Button, Button, Button> server in servers)
             {
-                if(server.Item5.Equals(sender))
+                if (server.Item5.Equals(sender))
                 {
-                    string tabName = server.Item1.Text + " Options";
+                    string tabName = server.Item1.Text + " Server Properties";
                     TabPage newPage = new TabPage(tabName);
-                    foreach(TabPage page in Tabs.TabPages)
+                    foreach (TabPage page in Tabs.TabPages)
                     {
-                        if(newPage.Text == page.Text)
+                        if (newPage.Text == page.Text)
                         {
                             return;
                         }
@@ -195,25 +202,25 @@ namespace Minecraft_Server_Launcher.GUI
         private void SetTabPage()
         {
             TabPage page = Tabs.TabPages[Tabs.TabPages.Count - 1];
-            Options options = new Options();
-            page.Controls.Add(options);
+            ServerProperties properties = new ServerProperties();
+            page.Controls.Add(properties);
         }
 
         private void ToggleButton_Click(object sender, EventArgs e)
         {
-            Button b = (Button) sender;
+            Button b = (Button)sender;
         }
 
         private void CreateServerButton_Click(object sender, EventArgs e)
         {
-            if(NewServerName.Text != "")
+            if (NewServerName.Text != "")
             {
                 if (manager.CreateServer(NewServerName.Text) == "Success")
                 {
                     int yPosition = Y_INTERVAL * servers.Count;
                     AddServerInPanel(servers.Count, NewServerName.Text, yPosition);
                 }
-                else if(manager.CreateServer(NewServerName.Text) == "Server Already Exists")
+                else if (manager.CreateServer(NewServerName.Text) == "Server Already Exists")
                 {
                     WriteMessage("The Server Already Exists In The Server Folder");
                 }
@@ -234,11 +241,6 @@ namespace Minecraft_Server_Launcher.GUI
         public void WriteMessage(string message)
         {
             Message.Text = message;
-        }
-
-        private void Message_DragDrop(object sender, DragEventArgs e)
-        {
- 
         }
     }
 }

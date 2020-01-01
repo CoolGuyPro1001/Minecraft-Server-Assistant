@@ -4,16 +4,16 @@ using System.IO;
 
 namespace Minecraft_Server_Launcher
 {
-    public partial class Options : System.Windows.Forms.UserControl
+    public partial class ServerProperties : System.Windows.Forms.UserControl
     {
         string directory;
         string file;
         Bitmap source;
-        public Options()
+        public ServerProperties()
         {
             InitializeComponent();
             directory = Directory.GetCurrentDirectory();
-            file = directory + @"\Resources\Options.png";
+            file = directory + @"\Resources\Icons.png";
             source = new Bitmap(file);
 
             AllowNetherButton.BackgroundImage = CropImage(source, new Rectangle(new Point(100, 0), new Size(100, 100)));

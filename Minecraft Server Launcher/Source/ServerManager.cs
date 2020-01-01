@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Minecraft_Server_Launcher.GUI;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Minecraft_Server_Launcher
 {
@@ -34,18 +35,26 @@ namespace Minecraft_Server_Launcher
             ServerCount = jsonData.MinecraftServers.Count;
             Servers = new string[256];
 
+            if(!jsonData.ContainsServerFile)
+            {
+                EventWaitHandle wait = new EventWaitHandle(false, EventResetMode.AutoReset);
+                DropServer drop = new DropServer(wait);
+                drop.Show();
+                wait.WaitOne();
+                drop.Dispose();
+            }
+
             if(jsonData.RootDirectory == null)
             {
-                FolderBrowserDialog setupServerFolder = new FolderBrowserDialog();
-                setupServerFolder.Description = "Select A Folder To Store Servers";
-                
-                setupServerFolder.ShowDialog();
-                if (setupServerFolder.SelectedPath != "")
+                while (jsonData.RootDirectory == "" || jsonData.RootDirectory == null)
                 {
-                    jsonData.RootDirectory = setupServerFolder.SelectedPath;
-                }
+                    FolderBrowserDialog setupServerFolder = new FolderBrowserDialog();
+                    setupServerFolder.Description = "Select A Folder To Store Servers";
 
-                setupServerFolder.Dispose();
+                    setupServerFolder.ShowDialog();
+                    jsonData.RootDirectory = setupServerFolder.SelectedPath;
+                    setupServerFolder.Dispose();
+                }
             }
 
             for (int i = 0; i < jsonData.MinecraftServers.Count; i++)
@@ -105,7 +114,7 @@ namespace Minecraft_Server_Launcher
             }
         }
 
-        public void RunServer(string serverName)
+        public string RunServer(string serverName, MemorySize min, MemorySize max, bool gui)
         {
             int index = FindServer(serverName);
             string directory = jsonData.MinecraftServers[index].Directory;
@@ -127,7 +136,20 @@ namespace Minecraft_Server_Launcher
 
                     if (!jsonData.MinecraftServers[index].Signed)
                     {
-                        
+                        runServer.Kill();
+                        runServer.Close();
+                        return "No Signed";
+                    }
+                    else
+                    {
+                        string command = "java -Xms" + min.Number + min.Unit + " -Xmx" + max.Number + max.Unit + " -jar server.jar";
+                        if(!gui)
+                        {
+                            command += " nogui";
+                        }
+
+                        runServer.StandardInput.WriteLine(command);
+                        return "Signed";
                     }
                 }
             }
@@ -135,6 +157,7 @@ namespace Minecraft_Server_Launcher
             {
                 Console.WriteLine(e.Message);
             }
+            return "Error";
         }
 
         private void RecieveData(object sender, EventArgs e)

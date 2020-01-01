@@ -109,7 +109,6 @@
             this.Message.Size = new System.Drawing.Size(400, 218);
             this.Message.TabIndex = 6;
             this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.Message.DragDrop += new System.Windows.Forms.DragEventHandler(this.Message_DragDrop);
             // 
             // MinecraftServerLauncher
             // 
