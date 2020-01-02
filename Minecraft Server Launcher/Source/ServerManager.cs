@@ -38,10 +38,12 @@ namespace Minecraft_Server_Launcher
             if(!jsonData.ContainsServerFile)
             {
                 EventWaitHandle wait = new EventWaitHandle(false, EventResetMode.AutoReset);
-                DropServer drop = new DropServer(wait);
+                DropServer drop = new DropServer(wait, this);
                 drop.Show();
                 wait.WaitOne();
                 drop.Dispose();
+
+                jsonData.ContainsServerFile = true;
             }
 
             if(jsonData.RootDirectory == null)
@@ -77,6 +79,11 @@ namespace Minecraft_Server_Launcher
                 string text = File.ReadAllText(jsonFile);
                 return text;
             }
+        }
+
+        public void AddServerFile(string server)
+        {
+            File.Copy(server, serverFile);
         }
 
         public int FindServer(string name)
@@ -143,10 +150,7 @@ namespace Minecraft_Server_Launcher
                     else
                     {
                         string command = "java -Xms" + min.Number + min.Unit + " -Xmx" + max.Number + max.Unit + " -jar server.jar";
-                        if(!gui)
-                        {
-                            command += " nogui";
-                        }
+                        if(!gui) command += " nogui";
 
                         runServer.StandardInput.WriteLine(command);
                         return "Signed";

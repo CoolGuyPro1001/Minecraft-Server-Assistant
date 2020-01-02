@@ -67,6 +67,7 @@ namespace Minecraft_Server_Launcher.GUI
             newServerLabel.Font = new Font("Microsoft Sans Serif", 25.0f);
             newServerLabel.TextAlign = ContentAlignment.MiddleCenter;
             newServerLabel.ForeColor = Color.FromName("White");
+            newServerLabel.BackColor = Color.FromName("Transparent");
             newServerLabel.Text = name;
             ServerPanel.Controls.Add(newServerLabel);
 
@@ -222,8 +223,10 @@ namespace Minecraft_Server_Launcher.GUI
                 }
                 else if (manager.CreateServer(NewServerName.Text) == "Server Already Exists")
                 {
-                    WriteMessage("The Server Already Exists In The Server Folder");
+                    WriteMessage("Server Already Exists In Server Folder");
                 }
+
+                NewServerName.Text = "";
             }
         }
 
@@ -231,6 +234,11 @@ namespace Minecraft_Server_Launcher.GUI
         {
             NewServerName.Text = "";
             NewServerName.BackColor = Color.White;
+        }
+
+        private void Button_MouseHover(object sender, EventArgs e)
+        {
+
         }
 
         public void ShutDownSequence()

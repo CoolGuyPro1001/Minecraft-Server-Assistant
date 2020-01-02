@@ -41,15 +41,16 @@
             // 
             // CreateServerButton
             // 
+            this.CreateServerButton.AutoSize = true;
             this.CreateServerButton.BackColor = System.Drawing.Color.Gray;
             this.CreateServerButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.CreateServerButton.FlatAppearance.BorderSize = 3;
             this.CreateServerButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CreateServerButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
             this.CreateServerButton.ForeColor = System.Drawing.Color.White;
-            this.CreateServerButton.Location = new System.Drawing.Point(609, 258);
+            this.CreateServerButton.Location = new System.Drawing.Point(682, 311);
             this.CreateServerButton.Name = "CreateServerButton";
-            this.CreateServerButton.Size = new System.Drawing.Size(300, 100);
+            this.CreateServerButton.Size = new System.Drawing.Size(275, 67);
             this.CreateServerButton.TabIndex = 0;
             this.CreateServerButton.Text = "Create A Server";
             this.CreateServerButton.UseVisualStyleBackColor = false;
@@ -58,20 +59,21 @@
             // NewServerName
             // 
             this.NewServerName.BackColor = System.Drawing.Color.White;
-            this.NewServerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 50F);
-            this.NewServerName.Location = new System.Drawing.Point(557, 380);
+            this.NewServerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F);
+            this.NewServerName.Location = new System.Drawing.Point(667, 393);
             this.NewServerName.Name = "NewServerName";
-            this.NewServerName.Size = new System.Drawing.Size(400, 83);
+            this.NewServerName.Size = new System.Drawing.Size(302, 56);
             this.NewServerName.TabIndex = 1;
             this.NewServerName.Click += new System.EventHandler(this.NewServerName_Click);
             // 
             // ServerPanel
             // 
             this.ServerPanel.AutoScroll = true;
+            this.ServerPanel.BackColor = System.Drawing.Color.Transparent;
             this.ServerPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.ServerPanel.Location = new System.Drawing.Point(3, 3);
             this.ServerPanel.Name = "ServerPanel";
-            this.ServerPanel.Size = new System.Drawing.Size(526, 498);
+            this.ServerPanel.Size = new System.Drawing.Size(653, 498);
             this.ServerPanel.TabIndex = 5;
             // 
             // Tabs
@@ -85,7 +87,9 @@
             // 
             // HomePage
             // 
+            this.HomePage.BackColor = System.Drawing.Color.White;
             this.HomePage.BackgroundImage = global::Minecraft_Server_Launcher.Properties.Resources.backround;
+            this.HomePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.HomePage.Controls.Add(this.Message);
             this.HomePage.Controls.Add(this.CreateServerButton);
             this.HomePage.Controls.Add(this.ServerPanel);
@@ -96,17 +100,17 @@
             this.HomePage.Size = new System.Drawing.Size(980, 504);
             this.HomePage.TabIndex = 0;
             this.HomePage.Text = "Home";
-            this.HomePage.UseVisualStyleBackColor = true;
             // 
             // Message
             // 
             this.Message.AllowDrop = true;
+            this.Message.BackColor = System.Drawing.Color.Transparent;
             this.Message.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
             this.Message.ForeColor = System.Drawing.Color.White;
-            this.Message.Location = new System.Drawing.Point(557, 20);
+            this.Message.Location = new System.Drawing.Point(667, 17);
             this.Message.Margin = new System.Windows.Forms.Padding(0);
             this.Message.Name = "Message";
-            this.Message.Size = new System.Drawing.Size(400, 218);
+            this.Message.Size = new System.Drawing.Size(302, 256);
             this.Message.TabIndex = 6;
             this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -115,6 +119,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(127)))), ((int)(((byte)(0)))));
             this.ClientSize = new System.Drawing.Size(984, 526);
             this.Controls.Add(this.Tabs);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
