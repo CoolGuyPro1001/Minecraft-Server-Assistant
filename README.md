@@ -1,5 +1,5 @@
 # Minecraft-Server-Launcher
-In Development. v0.4.8
+In Development. v0.5.10
 
 # Download
-Not Avaible
+Not Available
