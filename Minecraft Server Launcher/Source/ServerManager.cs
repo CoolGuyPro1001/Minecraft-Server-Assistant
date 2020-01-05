@@ -16,15 +16,12 @@ namespace Minecraft_Server_Launcher
         private string bootupFile;
         private string jsonFile;
         public int ServerCount { get; set; }
-
-        public MinecraftServerLauncher GUI;
+        private EventWaitHandle wait;
 
         private JsonData jsonData;
         public string[] Servers { get; }
 
-        public bool AllowNether { get; set; }
-
-        public ServerManager(MinecraftServerLauncher gui)
+        public ServerManager()
         {
             launcherDirectory = Directory.GetCurrentDirectory();
             jsonFile = launcherDirectory + @"\Resources\Minecraft Server Data.JSON";
@@ -37,7 +34,7 @@ namespace Minecraft_Server_Launcher
 
             if(!jsonData.ContainsServerFile)
             {
-                EventWaitHandle wait = new EventWaitHandle(false, EventResetMode.AutoReset);
+                wait = new EventWaitHandle(false, EventResetMode.AutoReset);
                 DropServer drop = new DropServer(wait, this);
                 drop.Show();
                 wait.WaitOne();
@@ -64,7 +61,6 @@ namespace Minecraft_Server_Launcher
                 Servers[i] = jsonData.MinecraftServers[i].Name;
             }
 
-            GUI = gui;
         }
 
         private string ReadJsonFile()
@@ -117,19 +113,19 @@ namespace Minecraft_Server_Launcher
 
                 string newBootupFile = newServerDirectory + @"\Bootup.bat";
                 File.Copy(bootupFile, newBootupFile);
+                string text = File.ReadAllText(newBootupFile).Insert(17, newServerDirectory);
+                File.WriteAllText(newBootupFile, text);
+
                 return "Success";
             }
         }
 
-        public string RunServer(string serverName, MemorySize min, MemorySize max, bool gui)
+        public bool RunServer(string serverName, MemorySize min, MemorySize max, bool gui)
         {
             int index = FindServer(serverName);
             string directory = jsonData.MinecraftServers[index].Directory;
             string bootupFile = directory + @"\Bootup.bat";
-
-            string text = File.ReadAllText(bootupFile);
-            text = text.Insert(17, directory);
-            File.WriteAllText(bootupFile, text);
+            bool signed = false;
             try
             {
                 using (Process runServer = new Process())
@@ -138,35 +134,65 @@ namespace Minecraft_Server_Launcher
                     runServer.StartInfo.UseShellExecute = false;
                     runServer.StartInfo.CreateNoWindow = false;
                     runServer.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                    runServer.OutputDataReceived += RecieveData;
-                    runServer.Start();
+                    runServer.StartInfo.RedirectStandardOutput = true;
+                    runServer.StartInfo.RedirectStandardError = true;
+                    runServer.ErrorDataReceived += RecieveBootupError;
+                    runServer.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+                    {
+                        if (!runServer.HasExited)
+                            runServer.Kill();
+                    });
 
                     if (!jsonData.MinecraftServers[index].Signed)
                     {
-                        runServer.Kill();
-                        runServer.Close();
-                        return "No Signed";
+                        runServer.Start();
+                        runServer.BeginOutputReadLine();
+                        runServer.WaitForExit();
                     }
                     else
                     {
-                        string command = "java -Xms" + min.Number + min.Unit + " -Xmx" + max.Number + max.Unit + " -jar server.jar";
-                        if(!gui) command += " nogui";
-
-                        runServer.StandardInput.WriteLine(command);
-                        return "Signed";
+                        runServer.StartInfo.RedirectStandardOutput = false;
+                        runServer.StartInfo.RedirectStandardError = false;
+                        runServer.Start();
+                        signed = true;
                     }
+                    runServer.Close();
+           
                 }
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            return "Error";
+
+            return signed;
         }
 
-        private void RecieveData(object sender, EventArgs e)
+        public void SignEula(string serverName)
         {
-            
+            int index = FindServer(serverName);
+            string directory = jsonData.MinecraftServers[index].Directory;
+            string eula = directory + @"\eula.txt";
+            string text = File.ReadAllText(eula);
+            for(int i = 170; i < text.Length; i++)
+            {
+                if (text[i] == 'f')
+                {
+                    text = text.Remove(i).Insert(i, "true");
+                    File.WriteAllText(eula, text);
+                    jsonData.MinecraftServers[index].Signed = true;
+                }
+            }
+        }
+
+        private void RecieveBootupError(object sender, EventArgs e)
+        {
+            Console.WriteLine("Error Recieved");
+        }
+
+        private void RecieveBootupOutput(object sender, EventArgs e)
+        {
+            Console.WriteLine("Output Recieved");   
         }
 
         public void StopServer(string minecraftServer)

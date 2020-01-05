@@ -22,7 +22,7 @@ namespace Minecraft_Server_Launcher.GUI
 
         public MinecraftServerLauncher()
         {
-            manager = new ServerManager(this);
+            manager = new ServerManager();
             InitializeComponent();
             directory = Directory.GetCurrentDirectory();
             servers = new List<Tuple<Label, Button, Button, Button, Button>>();
@@ -116,10 +116,26 @@ namespace Minecraft_Server_Launcher.GUI
                     MemorySize min = new MemorySize(500, "M");
                     MemorySize max = new MemorySize(2, "G");
 
-                    string signed = manager.RunServer(server.Item1.Text, min, max, false);
-                    if (signed == "Not Signed")
+                    bool signed = manager.RunServer(server.Item1.Text, min, max, false);
+                    if (signed)
                     {
-                        WriteMessage("Agree?");
+                        Console.WriteLine("Vrrroooom");
+                    }
+                    else
+                    {
+                        string tabName = server.Item1.Text + " EULA";
+                        TabPage eulaPage = new TabPage(tabName);
+                        foreach (TabPage page in Tabs.TabPages)
+                        {
+                            if (eulaPage.Text == page.Text)
+                            {
+                                return;
+                            }
+                        }
+
+                        Tabs.TabPages.Add(eulaPage);
+                        EULA eula = new EULA(server.Item1.Text, manager);
+                        SetupTabPage(eulaPage, eula);
                     }
                 }
             }
@@ -194,17 +210,16 @@ namespace Minecraft_Server_Launcher.GUI
                         }
                     }
 
-                    Tabs.Controls.Add(newPage);
-                    SetTabPage();
+                    Tabs.TabPages.Add(newPage);
+                    ServerProperties properties = new ServerProperties();
+                    SetupTabPage(newPage, properties);
                 }
             }
         }
 
-        private void SetTabPage()
+        private void SetupTabPage(TabPage page, UserControl control)
         {
-            TabPage page = Tabs.TabPages[Tabs.TabPages.Count - 1];
-            ServerProperties properties = new ServerProperties();
-            page.Controls.Add(properties);
+            page.Controls.Add(control);
         }
 
         private void ToggleButton_Click(object sender, EventArgs e)
