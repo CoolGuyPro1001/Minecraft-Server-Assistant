@@ -15,23 +15,6 @@ namespace Minecraft_Server_Assistant.GUI
             this.manager = manager;
             InitializeComponent();
         }
-
-        /// <summary>
-        ///     Copies dropped server file to Resources folder.
-        ///     <c>
-        ///         manager.AddServerFile(files[0]);
-        ///     </c>
-        ///
-        ///     Also checks if the user is trying to drop more than one file.
-        ///     <c>
-        ///         if(files.Length == 1)
-        ///             manager.AddServerFile(files[0]);
-        ///     </c>
-        ///     
-        ///     <exception>
-        ///         Just the server.jar file. No adding pictures
-        ///     </exception>
-        ///</summary>
         
         private void DropServer_DragDrop(object sender, DragEventArgs e)
         {
@@ -43,7 +26,6 @@ namespace Minecraft_Server_Assistant.GUI
                 throw new Exception("Just the server.jar file. No adding pictures");
             wait.Set();
         }
-
 
         private void DropServer_DragEnter(object sender, DragEventArgs e)
         {
