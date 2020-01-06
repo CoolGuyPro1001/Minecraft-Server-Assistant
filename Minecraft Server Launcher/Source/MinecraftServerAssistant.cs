@@ -3,10 +3,11 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using Minecraft_Server_Assistant.GUI;
 
-namespace Minecraft_Server_Launcher.GUI
+namespace Minecraft_Server_Assistant
 {
-    public partial class MinecraftServerLauncher : Form
+    public partial class MinecraftServerAssistant : Form
     {
         private string directory;
         private ServerManager manager;
@@ -20,7 +21,7 @@ namespace Minecraft_Server_Launcher.GUI
         private const int COMPONENT_WIDTH = 50;
         private const int Y_INTERVAL = 70;
 
-        public MinecraftServerLauncher()
+        public MinecraftServerAssistant()
         {
             manager = new ServerManager();
             InitializeComponent();

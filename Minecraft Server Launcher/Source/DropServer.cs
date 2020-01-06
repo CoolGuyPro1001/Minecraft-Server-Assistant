@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Threading;
 
-namespace Minecraft_Server_Launcher
+namespace Minecraft_Server_Assistant.GUI
 {
     public partial class DropServer : Form
     {

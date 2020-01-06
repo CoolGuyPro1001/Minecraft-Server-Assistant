@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Minecraft_Server_Assistant;
 
-namespace Minecraft_Server_Launcher.GUI
+namespace Minecraft_Server_Assistant.GUI
 {
     public partial class EULA : UserControl
     {

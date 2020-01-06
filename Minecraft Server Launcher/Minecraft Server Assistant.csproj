@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8553FDAB-561D-4C34-8196-A7C1E7201A1F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Minecraft_Server_Launcher</RootNamespace>
-    <AssemblyName>Minecraft Server Launcher</AssemblyName>
+    <RootNamespace>Minecraft_Server_Assistant</RootNamespace>
+    <AssemblyName>Minecraft Server Assistant</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,8 +48,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Resources\Minecraft Server Assistant Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Minecraft_Server_Assistant.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -75,11 +77,11 @@
     <Compile Include="Source\DropServer.Designer.cs">
       <DependentUpon>DropServer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\MinecraftServerLauncher.cs">
+    <Compile Include="Source\MinecraftServerAssistant.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\MinecraftServerLauncher.Designer.cs">
-      <DependentUpon>MinecraftServerLauncher.cs</DependentUpon>
+    <Compile Include="Source\MinecraftServerAssistant.Designer.cs">
+      <DependentUpon>MinecraftServerAssistant.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ServerOptions.cs">
       <SubType>UserControl</SubType>
@@ -104,8 +106,8 @@
     <EmbeddedResource Include="Source\DropServer.resx">
       <DependentUpon>DropServer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\MinecraftServerLauncher.resx">
-      <DependentUpon>MinecraftServerLauncher.cs</DependentUpon>
+    <EmbeddedResource Include="Source\MinecraftServerAssistant.resx">
+      <DependentUpon>MinecraftServerAssistant.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ServerOptions.resx">
       <DependentUpon>ServerOptions.cs</DependentUpon>
@@ -167,7 +169,7 @@
     <Content Include="Resources\Icons.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Minecraft Server Launcher Icon.ico" />
+    <Content Include="Resources\Minecraft Server Assistant Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,6 @@
-﻿namespace Minecraft_Server_Launcher.GUI
+﻿namespace Minecraft_Server_Assistant
 {
-    partial class MinecraftServerLauncher
+    partial class MinecraftServerAssistant
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinecraftServerLauncher));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinecraftServerAssistant));
             this.CreateServerButton = new System.Windows.Forms.Button();
             this.NewServerName = new System.Windows.Forms.TextBox();
             this.ServerPanel = new System.Windows.Forms.Panel();
@@ -88,7 +88,7 @@
             // HomePage
             // 
             this.HomePage.BackColor = System.Drawing.Color.White;
-            this.HomePage.BackgroundImage = global::Minecraft_Server_Launcher.Properties.Resources.backround;
+            this.HomePage.BackgroundImage = global::Minecraft_Server_Assistant.Properties.Resources.backround;
             this.HomePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.HomePage.Controls.Add(this.Message);
             this.HomePage.Controls.Add(this.CreateServerButton);

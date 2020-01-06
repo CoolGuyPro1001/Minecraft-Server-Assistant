@@ -1,4 +1,4 @@
-﻿namespace Minecraft_Server_Launcher
+﻿namespace Minecraft_Server_Assistant.GUI
 {
     partial class DropServer
     {
@@ -63,7 +63,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Minecraft_Server_Launcher.Properties.Resources.backround;
+            this.BackgroundImage = global::Minecraft_Server_Assistant.Properties.Resources.backround;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);

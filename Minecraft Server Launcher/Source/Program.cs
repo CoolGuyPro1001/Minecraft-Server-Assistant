@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
-using Minecraft_Server_Launcher.GUI;
 
-namespace Minecraft_Server_Launcher
+namespace Minecraft_Server_Assistant
 {
-    static class Program
+    public static class Program
     {
-        static MinecraftServerLauncher launcher;
+        static MinecraftServerAssistant assistant;
         
         [STAThread]
         static void Main()
@@ -20,13 +19,13 @@ namespace Minecraft_Server_Launcher
         {
             // Handle the ApplicationExit event to know when the application is exiting.
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
-            launcher = new MinecraftServerLauncher();
-            Application.Run(launcher);
+            assistant = new MinecraftServerAssistant();
+            Application.Run(assistant);
         }
 
         static private void OnApplicationExit(object sender, EventArgs e)
         {
-            launcher.ShutDownSequence();
+            assistant.ShutDownSequence();
         }
     }
 }

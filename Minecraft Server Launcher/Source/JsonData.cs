@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Minecraft_Server_Launcher
+namespace Minecraft_Server_Assistant
 {
     public class JsonData
     {

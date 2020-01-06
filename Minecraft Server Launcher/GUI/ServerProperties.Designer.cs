@@ -1,4 +1,4 @@
-﻿namespace Minecraft_Server_Launcher
+﻿namespace Minecraft_Server_Assistant.GUI
 {
     partial class ServerProperties
     {
@@ -153,7 +153,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.BackgroundImage = global::Minecraft_Server_Launcher.Properties.Resources.backround;
+            this.BackgroundImage = global::Minecraft_Server_Assistant.Properties.Resources.backround;
             this.Controls.Add(this.PVPButton);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);

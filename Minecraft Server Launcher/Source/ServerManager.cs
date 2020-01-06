@@ -2,16 +2,16 @@
 using System.IO;
 using System;
 using System.Windows.Forms;
-using Minecraft_Server_Launcher.GUI;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Minecraft_Server_Assistant.GUI;
 
-namespace Minecraft_Server_Launcher
+namespace Minecraft_Server_Assistant
 {
     public class ServerManager
     {
-        private string launcherDirectory;
+        private string assistantDirectory;
         private string serverFile;
         private string bootupFile;
         private string jsonFile;
@@ -23,10 +23,10 @@ namespace Minecraft_Server_Launcher
 
         public ServerManager()
         {
-            launcherDirectory = Directory.GetCurrentDirectory();
-            jsonFile = launcherDirectory + @"\Resources\Minecraft Server Data.JSON";
-            serverFile = launcherDirectory + @"\Resources\server.jar";
-            bootupFile = launcherDirectory + @"\Resources\Bootup.bat";
+            assistantDirectory = Directory.GetCurrentDirectory();
+            jsonFile = assistantDirectory + @"\Resources\Minecraft Server Data.JSON";
+            serverFile = assistantDirectory + @"\Resources\server.jar";
+            bootupFile = assistantDirectory + @"\Resources\Bootup.bat";
             jsonData = JsonConvert.DeserializeObject<JsonData>(ReadJsonFile());
 
             ServerCount = jsonData.MinecraftServers.Count;
@@ -225,7 +225,7 @@ namespace Minecraft_Server_Launcher
         public void Close()
         {
             string save = JsonConvert.SerializeObject(jsonData);
-            string path = launcherDirectory + @"\Resources\Minecraft Server Data.JSON";
+            string path = assistantDirectory + @"\Resources\Minecraft Server Data.JSON";
             File.WriteAllText(path, save);
         }
     }
