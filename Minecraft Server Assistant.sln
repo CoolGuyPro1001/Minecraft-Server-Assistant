@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minecraft Server Assistant", "Minecraft Server Launcher\Minecraft Server Assistant.csproj", "{8553FDAB-561D-4C34-8196-A7C1E7201A1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minecraft Server Assistant", "Minecraft Server Assistant\Minecraft Server Assistant.csproj", "{8553FDAB-561D-4C34-8196-A7C1E7201A1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

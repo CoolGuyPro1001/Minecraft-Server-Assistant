@@ -1,4 +1,4 @@
-# Minecraft-Server-Launcher
+# Minecraft-Server-Assistant
 In Development. v0.5.10
 
 # Download
