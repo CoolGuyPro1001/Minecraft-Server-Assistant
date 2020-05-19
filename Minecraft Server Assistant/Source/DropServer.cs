@@ -16,7 +16,7 @@ namespace Minecraft_Server_Assistant.GUI
             this.manager = manager;
             InitializeComponent();
         }
-
+        
         private void DropServer_DragDrop(object sender, DragEventArgs e)
         {
             string format = DataFormats.FileDrop;
@@ -27,7 +27,6 @@ namespace Minecraft_Server_Assistant.GUI
                 throw new Exception("Just the server.jar file. No adding pictures");
             wait.Set();
         }
-
 
         private void DropServer_DragEnter(object sender, DragEventArgs e)
         {
