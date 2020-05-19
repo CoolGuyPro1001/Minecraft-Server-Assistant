@@ -1,4 +1,4 @@
-﻿namespace Minecraft_Server_Assistant
+﻿namespace Minecraft_Server_Assistant.Source
 {
     partial class MinecraftServerAssistant
     {
@@ -114,7 +114,7 @@
             this.Message.TabIndex = 6;
             this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // MinecraftServerLauncher
+            // MinecraftServerAssistant
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -123,8 +123,8 @@
             this.ClientSize = new System.Drawing.Size(984, 526);
             this.Controls.Add(this.Tabs);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "MinecraftServerLauncher";
-            this.Text = "Minecraft Server Launcher";
+            this.Name = "MinecraftServerAssistant";
+            this.Text = "Minecraft Server Assistant";
             this.Tabs.ResumeLayout(false);
             this.HomePage.ResumeLayout(false);
             this.HomePage.PerformLayout();

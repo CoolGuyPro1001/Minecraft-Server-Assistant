@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Minecraft_Server_Assistant.GUI;
 
-namespace Minecraft_Server_Assistant
+namespace Minecraft_Server_Assistant.Source
 {
     public partial class MinecraftServerAssistant : Form
     {
@@ -35,7 +35,7 @@ namespace Minecraft_Server_Assistant
             int numOfServers = manager.ServerCount;
             if (numOfServers > 0)
             {
-                string[] servers = manager.Servers;
+                List<string> servers = manager.Servers;
                 int i = 0;
                 while (i < numOfServers)
                 {
@@ -135,7 +135,7 @@ namespace Minecraft_Server_Assistant
                         }
 
                         Tabs.TabPages.Add(eulaPage);
-                        EULA eula = new EULA(server.Item1.Text, manager);
+                        EULA eula = new EULA(server.Item1.Text, manager, this);
                         SetupTabPage(eulaPage, eula);
                     }
                 }
@@ -221,6 +221,19 @@ namespace Minecraft_Server_Assistant
         private void SetupTabPage(TabPage page, UserControl control)
         {
             page.Controls.Add(control);
+        }
+
+        public void RemoveTabPage(UserControl control)
+        {
+            foreach(TabPage page in Tabs.TabPages)
+            {
+                if(page.Controls.Contains(control))
+                {
+                    page.Dispose();
+                    Tabs.TabPages.Remove(page);
+                    return;
+                }
+            }
         }
 
         private void ToggleButton_Click(object sender, EventArgs e)

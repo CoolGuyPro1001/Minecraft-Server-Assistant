@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Minecraft_Server_Assistant
+namespace Minecraft_Server_Assistant.Source
 {
     public static class Program
     {

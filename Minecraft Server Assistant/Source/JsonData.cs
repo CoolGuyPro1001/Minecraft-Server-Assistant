@@ -7,10 +7,10 @@ namespace Minecraft_Server_Assistant
     {
         public bool ContainsServerFile { get; set; }
         public string RootDirectory { get; set; }
-        public List<MinecraftServer> MinecraftServers { get; set; }
+        public List<MinecraftServerJson> MinecraftServers { get; set; }
     }
 
-    public class MinecraftServer
+    public class MinecraftServerJson
     {
         public string Name { get; set; }
         public string Directory { get; set; }
@@ -19,7 +19,7 @@ namespace Minecraft_Server_Assistant
         public bool Signed { get; set; }
         
         [JsonConstructor]
-        public MinecraftServer(string name, string directory, string linkedDirectory, bool signed)
+        public MinecraftServerJson(string name, string directory, string linkedDirectory, bool signed)
         {
             Name = name;
             Directory = directory;
@@ -28,7 +28,7 @@ namespace Minecraft_Server_Assistant
             Active = false;
         }
 
-        public MinecraftServer(string name, string directory)
+        public MinecraftServerJson(string name, string directory)
         {
             Name = name;
             Directory = directory;

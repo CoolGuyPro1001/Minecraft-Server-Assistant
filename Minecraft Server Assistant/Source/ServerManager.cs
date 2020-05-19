@@ -5,9 +5,11 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Minecraft_Server_Assistant.GUI;
+using System.Text;
 
-namespace Minecraft_Server_Assistant
+namespace Minecraft_Server_Assistant.Source
 {
     public class ServerManager
     {
@@ -19,7 +21,10 @@ namespace Minecraft_Server_Assistant
         private EventWaitHandle wait;
 
         private JsonData jsonData;
-        public string[] Servers { get; }
+        public List<string> Servers { get; }
+        private static List<Process> runningServers;
+
+        private static ServerRunner serverRunner;
 
         public ServerManager()
         {
@@ -28,11 +33,13 @@ namespace Minecraft_Server_Assistant
             serverFile = assistantDirectory + @"\Resources\server.jar";
             bootupFile = assistantDirectory + @"\Resources\Bootup.bat";
             jsonData = JsonConvert.DeserializeObject<JsonData>(ReadJsonFile());
+            runningServers = new List<Process>();
 
             ServerCount = jsonData.MinecraftServers.Count;
-            Servers = new string[256];
+            Servers = new List<string>();
+            serverRunner = new ServerRunner();
 
-            if(!jsonData.ContainsServerFile)
+            if (!jsonData.ContainsServerFile)
             {
                 wait = new EventWaitHandle(false, EventResetMode.AutoReset);
                 DropServer drop = new DropServer(wait, this);
@@ -43,7 +50,7 @@ namespace Minecraft_Server_Assistant
                 jsonData.ContainsServerFile = true;
             }
 
-            if(jsonData.RootDirectory == null)
+            if (jsonData.RootDirectory == null)
             {
                 while (jsonData.RootDirectory == "" || jsonData.RootDirectory == null)
                 {
@@ -65,7 +72,7 @@ namespace Minecraft_Server_Assistant
 
         private string ReadJsonFile()
         {
-            if(!File.Exists(jsonFile))
+            if (!File.Exists(jsonFile))
             {
                 Console.WriteLine("Can't Find JSON File");
                 return "";
@@ -82,20 +89,6 @@ namespace Minecraft_Server_Assistant
             File.Copy(server, serverFile);
         }
 
-        public int FindServer(string name)
-        {
-            List<MinecraftServer> servers = jsonData.MinecraftServers;
-            for (int i = 0; i < servers.Count; i++)
-            {
-                if (servers[i].Name == name)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
         public string CreateServer(string name)
         {
             string newServerDirectory = jsonData.RootDirectory + @"\" + name;
@@ -105,7 +98,8 @@ namespace Minecraft_Server_Assistant
             }
             else
             {
-                jsonData.MinecraftServers.Add(new MinecraftServer(name, newServerDirectory));
+                Servers.Add(name);
+                jsonData.MinecraftServers.Add(new MinecraftServerJson(name, newServerDirectory));
                 Directory.CreateDirectory(newServerDirectory);
 
                 string newServerFile = newServerDirectory + @"\server.jar";
@@ -120,47 +114,68 @@ namespace Minecraft_Server_Assistant
             }
         }
 
+        Action<Process> ManageProcess = (Process server) =>
+        {
+            //Handle Output
+            server.StandardOutput.ReadToEnd();
+        };
+
         public bool RunServer(string serverName, MemorySize min, MemorySize max, bool gui)
         {
-            int index = FindServer(serverName);
-            string directory = jsonData.MinecraftServers[index].Directory;
-            string bootupFile = directory + @"\Bootup.bat";
+            int index = Servers.IndexOf(serverName);
+            MinecraftServerJson runningServer = jsonData.MinecraftServers[index];
+            string directory = runningServer.Directory;
+            string serverjar = directory + @"\server.jar";
             bool signed = false;
             try
             {
-                using (Process runServer = new Process())
+                Process runServer = new Process();
+
+
+                runServer.StartInfo.FileName = @"java.exe";
+                runServer.StartInfo.Arguments = @"-jar " + serverjar + " nogui";
+                runServer.StartInfo.UseShellExecute = false;
+                runServer.StartInfo.CreateNoWindow = true;
+                runServer.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                runServer.StartInfo.RedirectStandardOutput = true;
+                runServer.StartInfo.RedirectStandardError = true;
+                runServer.StartInfo.WorkingDirectory = directory;
+
+
+                runServer.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
                 {
-                    runServer.StartInfo.FileName = bootupFile;
-                    runServer.StartInfo.UseShellExecute = false;
-                    runServer.StartInfo.CreateNoWindow = false;
-                    runServer.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                    runServer.StartInfo.RedirectStandardOutput = true;
-                    runServer.StartInfo.RedirectStandardError = true;
-                    runServer.ErrorDataReceived += RecieveBootupError;
-                    runServer.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+                    if (!runningServer.Signed)
                     {
                         if (!runServer.HasExited)
                             runServer.Kill();
-                    });
-
-                    if (!jsonData.MinecraftServers[index].Signed)
-                    {
-                        runServer.Start();
-                        runServer.BeginOutputReadLine();
-                        runServer.WaitForExit();
                     }
                     else
                     {
-                        runServer.StartInfo.RedirectStandardOutput = false;
-                        runServer.StartInfo.RedirectStandardError = false;
-                        runServer.Start();
-                        signed = true;
+                        string reader = runServer.StandardError.ReadToEnd();
+                        Console.WriteLine(reader);
                     }
+                });
+
+                runServer.Start();
+                serverRunner.AddProcess(runServer);
+
+                if (!runningServer.Signed)
+                {
+
+                    
+                    runServer.WaitForExit();
                     runServer.Close();
-           
+                }
+                else
+                {
+                    runningServers.Add(serverName, runServer);
+                    Task serverTask = new Task(() => ManageProcess(runServer));
+                    serverTask.Start();
+                    runningServer.Signed = true;
+                    signed = true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -168,9 +183,17 @@ namespace Minecraft_Server_Assistant
             return signed;
         }
 
+        private void SortOutputHandler(object sendingProcess, DataReceivedEventArgs outline)
+        {
+            if(!string.IsNullOrEmpty(outline.Data))
+            {
+                Console.WriteLine(outline.Data);
+            }
+        }
+
         public void SignEula(string serverName)
         {
-            int index = FindServer(serverName);
+            int index = Servers.IndexOf(serverName);
             string directory = jsonData.MinecraftServers[index].Directory;
             string eula = directory + @"\eula.txt";
             string text = File.ReadAllText(eula);
@@ -185,14 +208,10 @@ namespace Minecraft_Server_Assistant
             }
         }
 
-        private void RecieveBootupError(object sender, EventArgs e)
+        public void ChangeProperties()
         {
-            Console.WriteLine("Error Recieved");
-        }
 
-        private void RecieveBootupOutput(object sender, EventArgs e)
-        {
-            Console.WriteLine("Output Recieved");   
+
         }
 
         public void StopServer(string minecraftServer)
@@ -202,7 +221,7 @@ namespace Minecraft_Server_Assistant
 
         public void DeleteServer(string name)
         {
-            int index = FindServer(name);
+            int index = Servers.IndexOf(name);
             Directory.Delete(jsonData.MinecraftServers[index].Directory, true);
             jsonData.MinecraftServers.RemoveAt(index);
         }
@@ -212,7 +231,7 @@ namespace Minecraft_Server_Assistant
             FolderBrowserDialog setupLink = new FolderBrowserDialog();
             setupLink.Description = "Select A Minecraft Save";
             setupLink.ShowDialog();
-            jsonData.MinecraftServers[FindServer(minecraftServer)].LinkedWorldDirectory = setupLink.SelectedPath;
+            jsonData.MinecraftServers[Servers.IndexOf(minecraftServer)].LinkedWorldDirectory = setupLink.SelectedPath;
             setupLink.Dispose();
         }
 
