@@ -65,7 +65,7 @@ namespace Minecraft_Server_Assistant.Source
 
             for (int i = 0; i < ServerData.MinecraftServers.Count; i++)
             {
-                ServerNames[i] = ServerData.MinecraftServers[i].Name;
+                ServerNames.Add(ServerData.MinecraftServers[i].Name);
             }
 
         }
