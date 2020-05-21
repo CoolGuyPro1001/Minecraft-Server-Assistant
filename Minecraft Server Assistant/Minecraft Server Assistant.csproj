@@ -70,10 +70,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\EULA.cs">
+    <Compile Include="Source\GUI\EULA.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\EULA.Designer.cs">
+    <Compile Include="Source\GUI\EULA.Designer.cs">
       <DependentUpon>EULA.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\DropServer.cs">
@@ -82,16 +82,22 @@
     <Compile Include="Source\DropServer.Designer.cs">
       <DependentUpon>DropServer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\GUI\ServerConsole.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\GUI\ServerConsole.Designer.cs">
+      <DependentUpon>ServerConsole.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MinecraftServerAssistant.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Source\MinecraftServerAssistant.Designer.cs">
       <DependentUpon>MinecraftServerAssistant.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ServerOptions.cs">
+    <Compile Include="Source\GUI\ServerOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\ServerOptions.Designer.cs">
+    <Compile Include="Source\GUI\ServerOptions.Designer.cs">
       <DependentUpon>ServerOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\JsonData.cs" />
@@ -99,23 +105,26 @@
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\ServerManager.cs" />
-    <Compile Include="GUI\ServerProperties.cs">
+    <Compile Include="Source\GUI\ServerProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\ServerProperties.Designer.cs">
+    <Compile Include="Source\GUI\ServerProperties.Designer.cs">
       <DependentUpon>ServerProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\ServerRunner.cs" />
-    <EmbeddedResource Include="GUI\EULA.resx">
+    <EmbeddedResource Include="Source\GUI\EULA.resx">
       <DependentUpon>EULA.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\DropServer.resx">
       <DependentUpon>DropServer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Source\GUI\ServerConsole.resx">
+      <DependentUpon>ServerConsole.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MinecraftServerAssistant.resx">
       <DependentUpon>MinecraftServerAssistant.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\ServerOptions.resx">
+    <EmbeddedResource Include="Source\GUI\ServerOptions.resx">
       <DependentUpon>ServerOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -128,7 +137,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="GUI\ServerProperties.resx">
+    <EmbeddedResource Include="Source\GUI\ServerProperties.resx">
       <DependentUpon>ServerProperties.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />

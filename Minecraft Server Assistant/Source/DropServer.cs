@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Threading;
 using Minecraft_Server_Assistant.Source;
 
-namespace Minecraft_Server_Assistant.GUI
+namespace Minecraft_Server_Assistant.Source
 {
     public partial class DropServer : Form
     {

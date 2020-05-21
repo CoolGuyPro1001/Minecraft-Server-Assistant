@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 
-namespace Minecraft_Server_Assistant.GUI
+namespace Minecraft_Server_Assistant.Source.GUI
 {
     public partial class ServerProperties : System.Windows.Forms.UserControl
     {

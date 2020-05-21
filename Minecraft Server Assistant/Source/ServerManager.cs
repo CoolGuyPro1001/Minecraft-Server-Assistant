@@ -5,9 +5,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using Minecraft_Server_Assistant.GUI;
-using System.Text;
+using Minecraft_Server_Assistant.Source.GUI;
 
 namespace Minecraft_Server_Assistant.Source
 {
@@ -20,9 +18,10 @@ namespace Minecraft_Server_Assistant.Source
         public int ServerCount { get; set; }
         private EventWaitHandle wait;
 
-        private JsonData jsonData;
-        public List<string> Servers { get; }
+        private JsonData ServerData;
+        public List<string> ServerNames { get; }
         private static List<Process> runningServers;
+        private List<ServerConsole> serverOutputs;
 
         private static ServerRunner serverRunner;
 
@@ -32,14 +31,15 @@ namespace Minecraft_Server_Assistant.Source
             jsonFile = assistantDirectory + @"\Resources\Minecraft Server Data.JSON";
             serverFile = assistantDirectory + @"\Resources\server.jar";
             bootupFile = assistantDirectory + @"\Resources\Bootup.bat";
-            jsonData = JsonConvert.DeserializeObject<JsonData>(ReadJsonFile());
+            ServerData = JsonConvert.DeserializeObject<JsonData>(ReadJsonFile());
             runningServers = new List<Process>();
+            serverOutputs = new List<ServerConsole>();
 
-            ServerCount = jsonData.MinecraftServers.Count;
-            Servers = new List<string>();
+            ServerCount = ServerData.MinecraftServers.Count;
+            ServerNames = new List<string>();
             serverRunner = new ServerRunner();
 
-            if (!jsonData.ContainsServerFile)
+            if (!ServerData.ContainsServerFile)
             {
                 wait = new EventWaitHandle(false, EventResetMode.AutoReset);
                 DropServer drop = new DropServer(wait, this);
@@ -47,25 +47,25 @@ namespace Minecraft_Server_Assistant.Source
                 wait.WaitOne();
                 drop.Dispose();
 
-                jsonData.ContainsServerFile = true;
+                ServerData.ContainsServerFile = true;
             }
 
-            if (jsonData.RootDirectory == null)
+            if (ServerData.RootDirectory == null)
             {
-                while (jsonData.RootDirectory == "" || jsonData.RootDirectory == null)
+                while (ServerData.RootDirectory == "" || ServerData.RootDirectory == null)
                 {
                     FolderBrowserDialog setupServerFolder = new FolderBrowserDialog();
                     setupServerFolder.Description = "Select A Folder To Store Servers";
 
                     setupServerFolder.ShowDialog();
-                    jsonData.RootDirectory = setupServerFolder.SelectedPath;
+                    ServerData.RootDirectory = setupServerFolder.SelectedPath;
                     setupServerFolder.Dispose();
                 }
             }
 
-            for (int i = 0; i < jsonData.MinecraftServers.Count; i++)
+            for (int i = 0; i < ServerData.MinecraftServers.Count; i++)
             {
-                Servers[i] = jsonData.MinecraftServers[i].Name;
+                ServerNames[i] = ServerData.MinecraftServers[i].Name;
             }
 
         }
@@ -91,15 +91,15 @@ namespace Minecraft_Server_Assistant.Source
 
         public string CreateServer(string name)
         {
-            string newServerDirectory = jsonData.RootDirectory + @"\" + name;
+            string newServerDirectory = ServerData.RootDirectory + @"\" + name;
             if (Directory.Exists(newServerDirectory))
             {
                 return "Server Already Exists";
             }
             else
             {
-                Servers.Add(name);
-                jsonData.MinecraftServers.Add(new MinecraftServerJson(name, newServerDirectory));
+                ServerNames.Add(name);
+                ServerData.MinecraftServers.Add(new MinecraftServerJson(name, newServerDirectory));
                 Directory.CreateDirectory(newServerDirectory);
 
                 string newServerFile = newServerDirectory + @"\server.jar";
@@ -114,16 +114,10 @@ namespace Minecraft_Server_Assistant.Source
             }
         }
 
-        Action<Process> ManageProcess = (Process server) =>
+        public bool RunServer(string serverName, MemorySize min, MemorySize max, ServerConsole outputControl, bool gui)
         {
-            //Handle Output
-            server.StandardOutput.ReadToEnd();
-        };
-
-        public bool RunServer(string serverName, MemorySize min, MemorySize max, bool gui)
-        {
-            int index = Servers.IndexOf(serverName);
-            MinecraftServerJson runningServer = jsonData.MinecraftServers[index];
+            int index = ServerNames.IndexOf(serverName);
+            MinecraftServerJson runningServer = ServerData.MinecraftServers[index];
             string directory = runningServer.Directory;
             string serverjar = directory + @"\server.jar";
             bool signed = false;
@@ -139,6 +133,8 @@ namespace Minecraft_Server_Assistant.Source
                 runServer.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 runServer.StartInfo.RedirectStandardOutput = true;
                 runServer.StartInfo.RedirectStandardError = true;
+                runServer.StartInfo.RedirectStandardInput = true;
+
                 runServer.StartInfo.WorkingDirectory = directory;
 
 
@@ -156,23 +152,24 @@ namespace Minecraft_Server_Assistant.Source
                     }
                 });
 
+                runServer.OutputDataReceived += SortOutputHandler;
+
                 runServer.Start();
                 serverRunner.AddProcess(runServer);
 
                 if (!runningServer.Signed)
                 {
-
-                    
                     runServer.WaitForExit();
                     runServer.Close();
                 }
                 else
                 {
-                    runningServers.Add(serverName, runServer);
-                    Task serverTask = new Task(() => ManageProcess(runServer));
-                    serverTask.Start();
+                    runningServers.Add(runServer);
                     runningServer.Signed = true;
+                    outputControl.SetID(runningServers.IndexOf(runServer));
+                    serverOutputs.Add(outputControl);
                     signed = true;
+                    runServer.BeginOutputReadLine();
                 }
             }
             catch (Exception e)
@@ -185,16 +182,26 @@ namespace Minecraft_Server_Assistant.Source
 
         private void SortOutputHandler(object sendingProcess, DataReceivedEventArgs outline)
         {
+            Process server = (Process)sendingProcess;
+            int id = runningServers.IndexOf(server);
+
             if(!string.IsNullOrEmpty(outline.Data))
             {
-                Console.WriteLine(outline.Data);
+                serverOutputs[id].Invoke(new Action(() => serverOutputs[id].WriteLine(outline.Data)));
             }
         }
 
+        public static void Input(int serverID, string x)
+        {
+            Process server = runningServers[serverID];
+            server.StandardInput.WriteLine(x);
+        }
+
+
         public void SignEula(string serverName)
         {
-            int index = Servers.IndexOf(serverName);
-            string directory = jsonData.MinecraftServers[index].Directory;
+            int id = ServerNames.IndexOf(serverName);
+            string directory = ServerData.MinecraftServers[id].Directory;
             string eula = directory + @"\eula.txt";
             string text = File.ReadAllText(eula);
             for(int i = 170; i < text.Length; i++)
@@ -203,7 +210,7 @@ namespace Minecraft_Server_Assistant.Source
                 {
                     text = text.Remove(i).Insert(i, "true");
                     File.WriteAllText(eula, text);
-                    jsonData.MinecraftServers[index].Signed = true;
+                    ServerData.MinecraftServers[id].Signed = true;
                 }
             }
         }
@@ -221,9 +228,9 @@ namespace Minecraft_Server_Assistant.Source
 
         public void DeleteServer(string name)
         {
-            int index = Servers.IndexOf(name);
-            Directory.Delete(jsonData.MinecraftServers[index].Directory, true);
-            jsonData.MinecraftServers.RemoveAt(index);
+            int id = ServerNames.IndexOf(name);
+            Directory.Delete(ServerData.MinecraftServers[id].Directory, true);
+            ServerData.MinecraftServers.RemoveAt(id);
         }
 
         public void LinkServer(string minecraftServer)
@@ -231,7 +238,7 @@ namespace Minecraft_Server_Assistant.Source
             FolderBrowserDialog setupLink = new FolderBrowserDialog();
             setupLink.Description = "Select A Minecraft Save";
             setupLink.ShowDialog();
-            jsonData.MinecraftServers[Servers.IndexOf(minecraftServer)].LinkedWorldDirectory = setupLink.SelectedPath;
+            ServerData.MinecraftServers[ServerNames.IndexOf(minecraftServer)].LinkedWorldDirectory = setupLink.SelectedPath;
             setupLink.Dispose();
         }
 
@@ -243,7 +250,7 @@ namespace Minecraft_Server_Assistant.Source
 
         public void Close()
         {
-            string save = JsonConvert.SerializeObject(jsonData);
+            string save = JsonConvert.SerializeObject(ServerData);
             string path = assistantDirectory + @"\Resources\Minecraft Server Data.JSON";
             File.WriteAllText(path, save);
         }

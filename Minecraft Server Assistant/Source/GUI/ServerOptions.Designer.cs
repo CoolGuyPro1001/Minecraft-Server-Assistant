@@ -1,4 +1,4 @@
-﻿namespace Minecraft_Server_Launcher.GUI
+﻿namespace Minecraft_Server_Launcher.Source.GUI
 {
     partial class ServerOptions
     {

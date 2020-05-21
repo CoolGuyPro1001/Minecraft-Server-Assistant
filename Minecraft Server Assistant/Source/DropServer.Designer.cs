@@ -1,4 +1,4 @@
-﻿namespace Minecraft_Server_Assistant.GUI
+﻿namespace Minecraft_Server_Assistant.Source
 {
     partial class DropServer
     {

@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Minecraft_Server_Assistant.Source;
 
-namespace Minecraft_Server_Assistant.GUI
+namespace Minecraft_Server_Assistant.Source.GUI
 {
     public partial class EULA : UserControl
     {
